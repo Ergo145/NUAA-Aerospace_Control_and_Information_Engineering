@@ -1,0 +1,19 @@
+%标准预测函数
+function [xprek,zprek,Pprek]=Pred(Phi,xestkdelay,Pestkdelay,H,Q)
+%
+%预测部分prediction
+%状态预测值：xpre
+%xpre(:,k)=Phi*xest(:,k-1)
+%预测误差阵Ppre:
+%Pprek=Phi*Pestkdelay*Phi'+Q
+%
+%这里给出的是无控制的结果，若需要加控制箱修改xpre和Ppre表达式即可，其它函数为通用函数
+%
+%量测向量预测zpre:
+%zpre(:,k)=H*xpre(:,k)
+%
+%这里后缀delay的即为上一步的估计值
+%
+xprek=Phi*xestkdelay;
+zprek=H*xprek;
+Pprek=Phi*Pestkdelay*Phi'+Q;

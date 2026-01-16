@@ -1,0 +1,157 @@
+#include "DSP2833x_Device.h"     // DSP2833x Headerfile Include File
+#include "DSP2833x_Examples.h"   // DSP2833x Examples Include File
+
+// --- 函数声明 ---
+void scic_echoback_init(void);
+void scic_fifo_init(void);
+void scic_xmit(int a);
+void scic_msg(char *msg);
+// FIFO模式中断
+interrupt void scic_rx_fifo_isr(void);
+
+// --- 全局变量 ---
+Uint16 LoopCount;
+Uint16 ErrorCount;
+char rxBuffer[10]; // 缓冲数组
+
+void main(void)
+{
+    char *msg;
+
+    // Step 1. 初始化系统控制
+    InitSysCtrl();
+
+    // Step 2. 初始化 GPIO (仅初始化 SCI-C)
+    InitScicGpio();
+
+    // Step 3. 清除中断并初始化 PIE 向量表
+    DINT;
+    InitPieCtrl();
+    IER = 0x0000;
+    IFR = 0x0000;
+    InitPieVectTable();
+
+    // 【关键步骤】注册中断服务函数
+    // SCI-C 的接收中断向量是 SCIRXINTC
+    EALLOW;
+    PieVectTable.SCIRXINTC = &scic_rx_fifo_isr;
+    EDIS;
+
+    // Step 4. 初始化外设
+    // LoopCount = 0; // 这里的 LoopCount 可以在 ISR 里计数
+    // ErrorCount = 0;
+
+    scic_fifo_init();      // 初始化 FIFO (设置中断深度为9)
+    scic_echoback_init();  // 初始化 SCI (波特率38400)
+
+    // 使能中断
+    // 1. 在 PIE 模块中使能 SCI-C RX 中断 (Group 8, Interrupt 5)
+    PieCtrlRegs.PIEIER8.bit.INTx5 = 1;
+    // 2. 在 CPU 级使能 INT8 (Group 8 对应的 CPU 中断线)
+    IER |= M_INT8;
+    // 3. 使能全局中断
+    EINT;
+    ERTM;
+
+    msg = "\r\nReady (Interrupt Mode). Send AaBb123CC...\r\n\0";
+    scic_msg(msg);
+
+    for(;;)
+    {
+    }
+}
+
+// ---------------------------------------------------------
+//  中断服务函数 (ISR)
+//  当 FIFO 接收到 9 个字节时，CPU 会自动跳转到这里执行
+// ---------------------------------------------------------
+interrupt void scic_rx_fifo_isr(void)
+{
+    int i;
+
+    // 1. 直接读取 FIFO 中的数据 
+    for(i = 0; i < 9; i++)
+    {
+        rxBuffer[i] = ScicRegs.SCIRXBUF.all;
+    }
+    rxBuffer[9] = '\0'; // 添加结束符
+
+    // 2. 将数据原样发回
+    scic_msg(rxBuffer);
+
+    // 3. 清空缓冲数组 (响应你的要求)
+    for(i = 0; i < 10; i++)
+    {
+        rxBuffer[i] = 0;
+    }
+
+    // 4. 清除中断标志位，以便下一次中断能正常触发
+    // 清除 SCI 模块内的 FIFO 中断标志
+    ScicRegs.SCIFFRX.bit.RXFFOVRCLR = 1;   // 清除溢出标志
+    ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1;   // 清除接收中断标志
+
+    // 5. 响应 PIE 控制器 (Group 8)
+    PieCtrlRegs.PIEACK.all = PIEACK_GROUP8;
+}
+
+// ---------------------------------------------------------
+//  配置 SCI (波特率 38400)
+// ---------------------------------------------------------
+void scic_echoback_init()
+{
+    ScicRegs.SCICCR.all = 0x0007;
+    ScicRegs.SCICTL1.all = 0x0003;
+    ScicRegs.SCICTL2.all = 0x0003;
+    ScicRegs.SCICTL2.bit.TXINTENA = 1;
+    ScicRegs.SCICTL2.bit.RXBKINTENA = 1;
+
+    #if (CPU_FRQ_150MHZ)
+        // 38400 baud @LSPCLK = 37.5MHz.
+        ScicRegs.SCIHBAUD    = 0x0000;
+        ScicRegs.SCILBAUD    = 0x0079;
+    #endif
+    #if (CPU_FRQ_100MHZ)
+        ScicRegs.SCIHBAUD    = 0x0001;
+        ScicRegs.SCILBAUD    = 0x0044;
+    #endif
+
+    ScicRegs.SCICTL1.all = 0x0023;
+}
+
+// ---------------------------------------------------------
+//  发送字符
+// ---------------------------------------------------------
+void scic_xmit(int a)
+{
+    while (ScicRegs.SCICTL2.bit.TXRDY == 0) {}
+    ScicRegs.SCITXBUF = a;
+}
+
+// ---------------------------------------------------------
+//  发送字符串
+// ---------------------------------------------------------
+void scic_msg(char * msg)
+{
+    int i = 0;
+    while(msg[i] != '\0')
+    {
+        scic_xmit(msg[i]);
+        i++;
+    }
+}
+
+// ---------------------------------------------------------
+//  初始化 FIFO 
+// ---------------------------------------------------------
+void scic_fifo_init()
+{
+    ScicRegs.SCIFFTX.all = 0xE040;
+
+    ScicRegs.SCIFFRX.bit.RXFFOVRCLR = 1; // 清除溢出
+    ScicRegs.SCIFFRX.bit.RXFFINTCLR = 1; // 清除中断标志
+    ScicRegs.SCIFFRX.bit.RXFFIENA = 1;   // 使能 FIFO 接收中断
+    ScicRegs.SCIFFRX.bit.RXFFIL = 9;     // 设置中断级别为 9
+    ScicRegs.SCIFFRX.bit.RXFIFORESET = 1;// 释放复位
+
+    ScicRegs.SCIFFCT.all = 0x0;
+}

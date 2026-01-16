@@ -1,0 +1,217 @@
+\documentclass[a4paper,11pt]{article}
+
+% --- 宏包引入 ---
+\usepackage[UTF8]{ctex}     % 支持中文
+\usepackage{amsmath}        % 数学公式支持
+\usepackage{amssymb}        % 数学符号支持
+\usepackage{geometry}       % 页面边距调整
+\usepackage{siunitx}        % 处理物理单位（可选，但推荐）
+
+% --- 页面设置 ---
+\geometry{left=2.5cm, right=2.5cm, top=2.5cm, bottom=2.5cm}
+
+\title{\textbf{轨道力学公式汇总}}
+\author{}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{常数}
+\begin{itemize}
+    \item 地球半径: $R_e = 6378 \, \text{km}$
+    \item 地球引力参数: $\mu = 398600 \, \text{km}^3/\text{s}^2$
+\end{itemize}
+
+\section{轨道方程与基础关系}
+
+\begin{enumerate}
+    \item \textbf{轨道方程}
+    \[
+        r = \frac{h^2}{\mu}\frac{1}{1+e\cos{\theta}}
+    \]
+    
+    \item \textbf{速度方程}
+    \[
+        \begin{aligned}
+            &v_r = \frac{\mu}{h}e\sin{\theta} \\
+            &v_\perp = \frac{\mu}{h}(1+e\cos{\theta})
+        \end{aligned} 
+    \]
+    
+    \item \textbf{飞行路径角}
+    \[
+        \tan\gamma = \frac{v_r}{v_\perp} = \frac{e\sin{\theta}}{1+e\cos{\theta}}
+    \]
+    
+    \item \textbf{活力公式 —— 能量守恒}
+    \begin{itemize}
+        \item 单位质量的相对动能：$\displaystyle \frac{v^2}{2}$
+        \item $m_2$ 在 $m_1$ 引力场作用下每单位质量的势能：$\displaystyle -\frac{\mu}{r}$
+    \end{itemize}
+    \textbf{比机械能：}
+    \[
+        \varepsilon = \frac{v^2}{2} - \frac{\mu}{r} = -\frac{1}{2}\frac{\mu^2}{h^2}(1-e^2)
+    \]
+\end{enumerate}
+
+\section{轨道特性公式}
+
+\subsection*{1. 圆轨道 ($e=0$)}
+\begin{itemize}
+    \item \textbf{速度：} $v_{\text{圆}} = \sqrt{\frac{\mu}{r}}$
+    \item \textbf{周期：} $T_{\text{圆}} = \frac{2\pi}{\sqrt{\mu}}r^{\frac{3}{2}}$
+    \item \textbf{比机械能：} $\varepsilon = -\frac{1}{2}\frac{\mu^2}{h^2} = -\frac{\mu}{2r}$
+\end{itemize}
+
+\subsection*{2. 椭圆轨道 ($0 < e < 1$)}
+\begin{itemize}
+    \item \textbf{偏心率：} $e = \frac{r_a-r_p}{r_a+r_p}$
+    \item \textbf{半长轴：} $2a = r_a+r_p$
+    \item \textbf{近地点/远地点：} $r_a = a(1+e), \quad r_p = a(1-e)$
+    \item \textbf{比机械能：} $\varepsilon = -\frac{1}{2}\frac{\mu^2}{h^2}(1-e^2) = -\frac{\mu}{2a}$
+    \item \textbf{周期：} $T = \frac{2\pi}{\sqrt{\mu}}a^{\frac{3}{2}}$
+\end{itemize}
+
+\subsection*{3. 抛物线轨道 ($e=1$) —— 逃逸轨道}
+\begin{itemize}
+    \item \textbf{逃逸速度：} $v_{\text{逃逸}} = \sqrt{\frac{2\mu}{r}}$
+    \item \textbf{比机械能：} $\varepsilon = -\frac{1}{2}\frac{\mu^2}{h^2}(1-e^2) = 0$
+    \item \textbf{飞行路径角：} 
+    \[
+        \tan\gamma = \frac{v_r}{v_\perp} = \frac{\sin{\theta}}{1+\cos{\theta}} = \tan{\frac{\theta}{2}}
+    \]
+\end{itemize}
+
+\subsection*{4. 双曲线轨道 ($e > 1$) —— 摆脱引力}
+\begin{itemize}
+    \item \textbf{近地点/远地点：} $r_a = -a(e+1)$, $\quad r_p = a(e-1)$
+    \item \textbf{半长轴：} $a = \frac{|r_a|-r_p}{2} = \frac{h^2}{\mu}\frac{1}{e^2-1}$
+    \item \textbf{速度关系：} 
+    \[
+        v^2 = v_{\infty}^2 + v^2_{\text{逃逸}}, \quad \text{其中 } v_{\text{逃逸}} = \sqrt{\frac{2\mu}{r}}
+    \]
+    \item \textbf{剩余速度：}
+    \[
+        v_{\infty} = \sqrt{\frac{\mu}{a}} = \frac{\mu}{h}e\sin{\theta_{\infty}} = \frac{\mu}{h}\sqrt{e^2-1}
+    \]
+    \item \textbf{特征能量：} $C_3 = v_{\infty}^2$
+    \item \textbf{瞄准半径 (又叫准径)：} $\Delta = a\sqrt{e^2-1}$
+    \item \textbf{$\beta$：渐近线与准线的夹角}
+    \[
+        \beta = 180^\circ - \theta_{\infty} = \arccos{\frac{1}{e}}
+    \]
+    \item \textbf{转向角 $\delta$：}
+    \[
+        \delta = 180^\circ - 2\beta = 2\arcsin{\frac{1}{e}}
+    \]
+    \item \textbf{比机械能：} $\varepsilon = -\frac{1}{2}\frac{\mu^2}{h^2}(1-e^2) = \frac{\mu}{2a}$
+\end{itemize}
+\newpage
+\section{行星际公式}
+    \subsection*{1. 影响球}
+    \vspace{-0.8cm}
+    \[\frac{r_{SOI}}{R}=(\frac{m_p}{m_s})^{\frac{2}{5}}\]
+    其中$r_{SOI}$为行星的影响球半径，$R$为行星到太阳的距离，$m_p$为行星质量，$m_s$为太阳质量。
+    当航天器行星距离小于$r_{SOI}$时，航天器主要受行星引力影响；反之，主要受太阳引力影响。
+    \subsection*{2. 交会窗口}
+    \vspace{-0.8cm}
+    \[\phi = \theta_2 - \theta_1 = (\theta_{10} + n_1t) - (\theta_{20} + n_2t) = \phi_0 + (n_1 - n_2)t\text{，行星2与行星1相位差}\]
+    行星1和行星2回到相同相位角差时所需要的周期为$T_{\text{周期}}=\frac{2\pi}{n_1-n_2}=\frac{T_1T_2}{|T_1-T_2|}$。
+    \par 任何情况下返回路径开始时的相角必须等于由行星1出发到达行星2时的相位角的负值。而等待相位角到达合适值时所需要的时间称为等待时间$t_{\text{等待}}$。
+    \[\left\{\begin{matrix} t_{\text{等待}}=\frac{-2\phi_f-2\pi N}{n_2 - n_1},n_1>n_2\\ t_{\text{等待}}=\frac{-2\phi_f+2\pi N}{n_2 - n_1},n_1<n_2\end{matrix}\right.\]
+    \subsection*{3. 行星际出发：从行星1出发，飞向行星2}
+    \begin{itemize}
+        \item \textbf{逃逸速度：} $v_{\infty} = \sqrt{\frac{\mu_{\text{太阳}}}{R_1}}(\sqrt{\frac{2R_2}{R_1+R_2}}-1)$, 其中 $R_1$ 、$R_2$ 分别为行星1、2绕太阳轨道半径。
+        \item \textbf{双曲线近地点速度：} $v_p = \sqrt{v_{\infty}^2 + 2\frac{\mu_{1}}{r_p}}$ ，其中$r_p$为双曲线轨道近地点。
+        \item \textbf{双曲线轨道的角动量：} $h = r_p v_p = r_p\sqrt{v_{\infty}^2 + 2\frac{\mu_{1}}{r_p}}$ 
+        \item \textbf{双曲线轨道偏心率：} $e = 1 + \frac{r_p v_{\infty}^2}{\mu_1}=1+\frac{r_p}{a}(\frac{v_{\infty}^2}{2}-\frac{\mu_1}{\infty}=\frac{\mu_1}{2a})$
+        \item \textbf{圆停泊轨道速度：}$v_c=\sqrt{\frac{\mu_1}{r_p}}$
+        \item \textbf{将航天器送入双曲线出发轨道所需的速度增量为：}$\Delta v = v_p - v_c = v_c (\sqrt{2+\frac{v_{\infty}^2}{v_c^2}}-1)$
+        \item \textbf{双曲线轨道拱线相对行星日心矢量的方位：}$\beta = \arccos{\frac{1}{e}}=\arccos{\frac{1}{1 + \frac{r_p v_{\infty}^2}{\mu_1}}}$
+    \end{itemize}
+    \subsection*{4. 行星际交会：已经从行星1出发，即将到达行星2}
+    \begin{itemize}
+        \item 由内行星1到外行星2：航天器将在影响球的前侧穿过（地球到火星）。
+        \item 由外行星1到内行星2：航天器将在影响球的后侧穿过（地球到金星）。
+    \end{itemize}
+    \textbf{假设进入偏心率为$e_{\text{俘获}}$的椭圆俘获轨道}
+        \begin{itemize}
+        \item \textbf{最优近地点半径：} $r_p = \frac{2\mu_2}{v_{\infty}^2}\frac{1-e_{\text{俘获}}}{1+e_{\text{俘获}}}$
+        \item \textbf{最小速度增量：} $\Delta v = v_\infty\sqrt{\frac{1-e_{\text{俘获}}}{2}}$
+        \item \textbf{最小速度增量对应的瞄准半径：} $\Delta = 2\sqrt{2}\frac{\sqrt{1-e_{\text{俘获}}}}{1+e_{\text{俘获}}}\frac{\mu_2}{v_{\infty}^2}=\sqrt{\frac{2}{1-e_{\text{俘获}}}}r_p$
+        \end{itemize}
+    \vspace{-0.5cm}
+    \subsection*{5. 行星际飞越}
+
+\newpage
+\section{选填相关}
+    \vspace{-0.5cm}
+    \subsection*{1. 拉格朗日点}
+        限制性三体问题中一共有五个拉格朗日点，分别记为L1、L2、L3、L4和L5。其中L1、L2和L3为共线平动点（不稳定），L4和L5为三角形平动点（稳定）。
+    \vspace{-0.5cm}
+    \subsection*{2. 轨道位置的时间函数}
+        对于椭圆轨道：$M_e = E - e\sin E$，其中$M_e$为平近点角，$E$为偏近点角。
+        \[\tan(\frac{E}{2}) = \sqrt{\frac{1-e}{1+e}}\tan(\frac{\theta}{2})\]
+        \[t = \frac{M_e}{2\pi}T_{\text{椭圆}}\]
+    \vspace{-0.5cm}
+    \subsection*{3. 初始轨道确定方法}
+        \begin{itemize}
+            \item \textbf{吉伯斯法}：利用三个共平面的不同时刻的地心位置矢量来确定初始轨道。
+            \item \textbf{兰伯特法}：根据两位置矢量和他们之间的时间间隔来确定初始轨道。
+            \item \textbf{高斯法}：利用三个不同时刻观测到的六个独立角度数据（高度角和方位角）来确定初始轨道。
+        \end{itemize}
+    \vspace{-0.5cm}
+    \subsection*{4. 时间系统}
+        \begin{itemize}
+            \item \textbf{太阳日}：真太阳连续两次经过同一子午圈的时间间隔，约为\textbf{24小时}。
+            \item \textbf{太阳时}：以太阳日为基本单位的计时系统。
+            \item \textbf{恒星日}：相距遥远的恒星返回地球上的固定点上方即相同的子午线上所需要的时间，约为\textbf{23小时56分}。
+            \item \textbf{恒星时}：以地球真正自转为基础，以恒星日为基本单位的计时系统。单位：度
+            \item \textbf{当地恒星时：}某地区的当地恒星时$\theta$为自春分点至当地子午线之间的时间，将春分点向东至当地子午线之间的恒星时乘以15便得到两者间的读书。
+            \item \textbf{儒略日}：从公元前4713年1月1日格林威治正午开始计算的连续日数。儒略日的起点是为了简化天文学中的日期计算。
+            \item \textbf{格林威治恒星时$\theta_G$:}当地恒星时$\theta$$=$格林威治恒星时$\theta_G$ $+$当地东经$\Lambda$
+            \item \textbf{儒略日：}指公元前4713年1月1日正午（UT）之后的天数。
+        \end{itemize} 
+    \vspace{-0.5cm}       
+    \subsection*{5. 测站坐标系}
+        \begin{itemize}
+            \item \textbf{测站赤道坐标系：}以观测站地面上O点为坐标原点，以过O点且与地心赤道坐标系$XYZ$轴相平行的一套非旋转$xyz$轴为坐标轴。相对应的观测量为\textbf{赤经}$\delta$和\textbf{赤纬}$\alpha$。
+            \item \textbf{测站地平坐标系：}以观测站地面上O点为坐标原点，$x$轴指向正东，$y$轴指向正北，$z$轴指向天顶。相对应的观测量为\textbf{方位角}$A$和\textbf{高度角}$a$。
+        \end{itemize}
+    \vspace{-0.5cm}
+    \subsection*{6. 轨道根数物理意义}
+        \begin{itemize}
+            \item \textbf{半长轴$a$：}轨道大小的量度，决定轨道周期。
+            \item \textbf{偏心率$e$：}轨道形状的量度，决定轨道的离心程度。
+            \item \textbf{倾角$i$：}轨道平面和赤道平面形成的二面角，轨道平面相对于参考平面的倾斜程度。
+            \item \textbf{升交点赤经$\Omega$：}轨道平面与参考平面交点的位置。
+            \item \textbf{近地点幅角$\omega$：}近地点在轨道平面内的位置。
+            \item \textbf{真近点角$\theta$：}航天器在轨道上的位置。
+        \end{itemize}
+    \vspace{-0.5cm}
+    \subsection*{7. 赤经赤纬}
+        \begin{itemize}
+            \item \textbf{赤经$\alpha$：}位于天赤道上的春分点$\gamma$是测量经度的起点。单位为度，方向由春分点向东测量。
+            \item \textbf{赤纬$\delta$：}维度在天球上称之为赤纬。沿子午线测量，单位为度，赤道以北为正，以南为负。
+        \end{itemize}
+    \vspace{-0.5cm}
+    \subsection*{8. 地球扁率对轨道根数的影响}
+        \begin{itemize}
+            \item \textbf{对升交点赤经的影响$\Omega$：}当轨道倾角小于90°（轨道顺行）时，交线将向西飘移，交点的赤经不同减小，称之为交点的退行；当轨道倾角大于90°时反之
+            \item \textbf{对近地点幅角的影响$\omega$：}当轨道倾角小于63.4°或大于116.6°两个临界倾角时，近地点将向卫星运行方向行进，称之为近地点前行；当轨道倾角位于两个临界倾角之间时反之。
+        \end{itemize}
+    \vspace{-0.5cm}
+    \subsubsection*{9. 霍曼转移内外轨道形状对效率的影响}
+        对于一个内部的圆轨道转移到外部轨道，最有效率的转移椭圆轨道应终止于外部椭圆目标轨道速度最小的远地点处。
+        \par 对于一个外部的圆或椭圆轨道转移至内部的椭圆轨道，最省能量的转移轨道应终止于内部目标轨道的近地点处。若目标轨道为一圆，则转移轨道应开始于外部椭圆轨道的远地点处。
+    \vspace{-0.5cm}
+    \subsubsection*{10. 双椭圆霍曼转移轨道与单椭圆霍曼转移轨道}
+        已知：外圆目标轨道$r_c$，内圆初始轨道$r_a$，双椭圆霍曼转移远地点半径$r_b$。
+        \begin{itemize}
+            \item 若$\frac{r_c}{r_a}<11.9$，则单椭圆霍曼转移轨道更省能量。
+            \item 若$\frac{r_c}{r_a}>15$，则双椭圆霍曼转移轨道更省能量。
+            \item 若$11.9<\frac{r_c}{r_a}<15$，对于大的远地点半径$r_b$有利于双椭圆轨道转移，而小的半径$r_b$有利于单椭圆轨道转移。
+        \end{itemize}
+\end{document}

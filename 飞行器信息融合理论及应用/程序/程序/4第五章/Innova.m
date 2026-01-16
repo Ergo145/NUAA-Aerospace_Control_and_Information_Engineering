@@ -1,0 +1,24 @@
+%用理论模型发生实际状态得到量测时的获取新息函数
+function [vnewk,Pvnewk,Pxzk,xrk]=Innova(Phi,xrkdelay,Q,zprek,H,Pprek,R)
+%
+%量测预测与量测过程
+%量测结果z：           
+%z(:,k)=xr(:,k)+v(:,k)
+%如果用理论模型发生则可采用：
+%z(:,k)=Phi*xr(:,k-1)+w(:,k-1)+v(:,k)
+%量测向量预测zpre:
+%zpre(:,k)=H*xpre(:,k)
+%新息向量vnew:
+%vnew(:,k)=z(:,k)-zpre(:,k)=z(:,k)-H*xpre(:,k)
+%新息向量协方差阵Pvnew:
+%Pvnew=H*Ppre*H'+R
+%预测互协方差阵Pxz（即xpre与zpre的互协方差）:
+%Pxz=Ppre*H'
+%
+w=sqrt(diag(Q))*randn;
+v=sqrt(diag(R))*randn;
+xrk=Phi*xrkdelay+w;
+zk=H*xrk+v;
+vnewk=zk-zprek;
+Pvnewk=H*Pprek*H'+R;
+Pxzk=Pprek*H';

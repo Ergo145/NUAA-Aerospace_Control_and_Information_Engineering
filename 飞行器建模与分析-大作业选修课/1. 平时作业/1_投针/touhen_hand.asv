@@ -1,0 +1,29 @@
+clear;
+clc;
+close all;
+%% 初始化
+line_width = 10;
+line_count = 5;   %一系列平行线均平行于X轴假设
+needle_length=rand()*10;
+t = 10000;
+%% 仿真
+intersect_count=0;%相交次数
+
+for i=1:t
+    needle_center_y=rand() * line_width;
+    needle_theta=rand()*2*pi;
+    needle_y = [needle_center_y-(needle_length*sin(needle_theta))/2,needle_center_y+(needle_length*sin(needle_theta))/2];
+    for j=-2:2
+        line_y=line_width*j;
+        if needle_y(1)<=line_y && needle_y(2)>=line_y
+            intersect_count = intersect_count + 1;
+        end
+    end
+end
+
+%% 计算估计的圆周率 
+if intersect_count > 0
+    estimated_pi = (2 * needle_length * t) / (line_width * intersect_count);
+else
+    estimated_pi = NaN;
+end
